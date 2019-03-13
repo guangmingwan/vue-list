@@ -5,10 +5,10 @@
       paddingBottom: lineBottomHeight +'px'
     }">
       <!--<li class="line-top" :style="{height: lineTopHeight +'px'}"></li>-->
-      <li v-for="item in previewList">{{item.title}}</li>
+      <li v-for="item in previewList">{{item.title}}<img draggable="true" src="/static/img/test.png" width="32"></li>
       <!--<li class="line-bottom" :style="{height: lineBottomHeight +'px'}"></li>-->
     </ul>
-    <div class="load-more-gif">loading...</div>
+    
   </div>
 </template>
 
@@ -25,7 +25,7 @@ export default {
     },
     height: {
       type: Number,
-      default: 44
+      default: 144
     },
     canScroll: {
       type: Boolean,
@@ -53,21 +53,25 @@ export default {
   methods: {
     initData() {
       // init all data
-      this._rowsInWindow = Math.ceil(this.$el.offsetHeight / this.height),
+      console.log("initdata")
+      this._cols = 2;
+      this._rowsInWindow = Math.ceil(this.$el.offsetHeight / this.height) * this._cols,
       this._above = this._rowsInWindow * 2,
       this._below = this._rowsInWindow,
       this._max = this._rowsInWindow * this.height;
+      
     },
     handleScroll() {
+      console.log("handleScroll")
       let _scrollTop = this.$el.scrollTop,
           _height = this.$el.querySelectorAll('ul')[0].offsetHeight,
           _contentHeight = this.$el.offsetHeight;
 
       // Counts the number of rows on the current screen
       if (_scrollTop / this.height - Math.floor(_scrollTop / this.height) > 0.5) {
-        this.displayCount = Math.ceil(_scrollTop / this.height);
+        this.displayCount = Math.ceil(_scrollTop / this.height)* this._cols;
       } else {
-        this.displayCount = Math.floor(_scrollTop / this.height);
+        this.displayCount = Math.floor(_scrollTop / this.height)* this._cols;
       }
 
       // if the maximum height is exceeded, reset the previewList
@@ -81,7 +85,7 @@ export default {
       }
 
       // get from and to count
-      let _from = parseInt(_scrollTop / this.height) - this._above;
+      let _from = parseInt(_scrollTop / this.height) * this._cols - this._above;
       if (_from < 0) {
           _from = 0;
       }
@@ -93,8 +97,8 @@ export default {
       this.to = _to;
 
       // set top height and bottom height
-      this.lineTopHeight = _from * this.height;
-      this.lineBottomHeight = (this.list.length - _to) * this.height;
+      this.lineTopHeight = _from / this._cols * this.height;
+      this.lineBottomHeight = (this.list.length - _to) /this._cols * this.height;
 
       // dispatch data
       if (typeof this.dispatchData === 'function') {
@@ -118,20 +122,17 @@ export default {
       this.canLoadmore = false;
       // fetch mock
       setTimeout(() => {
-        for(var i = 0; i < 200; i++) {
-          this.list.push({
-            title: 'item ' + COUNT++
-          });
-        }
+        
         let _from = from, _to = to + this._below;
         this.resetPreviewList(_from, _to);
-        this.lineBottomHeight = (this.list.length - _to) * this.height;
+        this.lineBottomHeight = (this.list.length - _to) / this._cols * this.height;
         this.handleScroll();
 
         this.canLoadmore = true;
       }, 2000)
     },
     resetPreviewList(from, to) {
+      console.log("resetPreviewList",from,to)
       // reset previewList
       this.previewList = [];
       for (; from < to; from++) {
@@ -155,8 +156,10 @@ export default {
     margin: 0;
     padding: 0;
     li{
+      width: 100px;
+      float: left;
       text-decoration: none;
-      height: 44px;
+      height: 144px;
       font-size: 14px;
       line-height: 3;
       text-align: left;
@@ -171,9 +174,9 @@ export default {
   }
   .load-more-gif{
     width: 100%;
-    height: 44px;
+    height: 144px;
     text-align: center;
-    line-height: 44px;
+    line-height: 144px;
     background: #fff;
     border-top: none;
     color: #48B884;

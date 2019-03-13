@@ -45,11 +45,11 @@ export default {
     }
   },
   created() {
-    for(var i = 0; i < 200; i++) {
-      this.list.push({
-        title: 'item ' + COUNT++
-      });
-    }
+    for(var i = 0; i < 12000; i++) {
+          this.list.push({
+            title: 'item ' + (i+1)
+          });
+        }
   },
   methods: {
     setData(data) {
