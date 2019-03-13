@@ -98,8 +98,8 @@ export default {
       this.to = _to;
 
       // set top height and bottom height
-      this.lineTopHeight = Math.ceil( _from / this._cols ) * this.height + 50;
-      this.lineBottomHeight = Math.ceil((this.list.length - _to) / this._cols) * this.height + 50;
+      this.lineTopHeight = Math.ceil( _from / this._cols ) * this.height + this.distance;
+      this.lineBottomHeight = Math.ceil((this.list.length - _to) / this._cols) * this.height + this.distance;
 
       // dispatch data
       if (typeof this.dispatchData === 'function') {
