@@ -58,7 +58,7 @@ export default {
       this._rowsInWindow = Math.ceil(this.$el.offsetHeight / this.height) * this._cols,
       this._above = this._rowsInWindow * 2,
       this._below = this._rowsInWindow,
-      this._max = this._rowsInWindow * this.height;
+      this._max = (this._rowsInWindow / this._cols) * this.height;
       
     },
     handleScroll() {
@@ -81,6 +81,7 @@ export default {
           if (this.to === this.list.length && _height - _scrollTop - _contentHeight < this.distance) {
             this.canScroll && this.loadmore(this.from, this.to);
           }
+          console.log("handleScroll return")
           return;
       }
 
@@ -97,8 +98,8 @@ export default {
       this.to = _to;
 
       // set top height and bottom height
-      this.lineTopHeight = _from / this._cols * this.height;
-      this.lineBottomHeight = (this.list.length - _to) /this._cols * this.height;
+      this.lineTopHeight = Math.ceil( _from / this._cols ) * this.height + 50;
+      this.lineBottomHeight = Math.ceil((this.list.length - _to) / this._cols) * this.height + 50;
 
       // dispatch data
       if (typeof this.dispatchData === 'function') {
@@ -118,6 +119,7 @@ export default {
       });
     },
     loadmore(from, to) {
+      console.log("loadmore",from, to)
       if (!this.canLoadmore) return;
       this.canLoadmore = false;
       // fetch mock
